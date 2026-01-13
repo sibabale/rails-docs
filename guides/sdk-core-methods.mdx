@@ -1,0 +1,183 @@
+---
+title: "Core SDK Methods"
+description: "Reference for all available Rails SDK operations"
+---
+
+The Rails SDK exposes all API operations as type-safe methods. Here are the core operations:
+
+## Transaction Webhooks
+
+Handle incoming transaction webhooks from external banking networks:
+
+```typescript
+import { Rails } from "@rails/sdk";
+
+const rails = new Rails();
+
+async function handleWebhook() {
+  const result = await rails.postWebhook({
+    txnRef: "TXN-001",
+    senderAccount: "1234567890",
+    receiverAccount: "0987654321",
+    senderBank: "BANK-A",
+    receiverBank: "BANK-B",
+    amount: 50000,
+    currency: "NGN",
+    timestamp: new Date().toISOString(),
+  });
+
+  console.log("Webhook processed:", result);
+}
+```
+
+## Ledger Management
+
+### Get Pending Transactions
+
+Retrieve all transactions awaiting settlement:
+
+```typescript
+const pending = await rails.getLedgerPending();
+
+console.log("Pending transactions:", pending.pending);
+console.log("Count:", pending.count);
+console.log("Timestamp:", pending.timestamp);
+```
+
+### Settle Transactions
+
+Trigger settlement for pending transactions:
+
+```typescript
+const settlement = await rails.postLedgerSettle({
+  authorized_by: "user@example.com",
+  force: false, // Skip validations if true
+});
+
+console.log("Settled transactions:", settlement.settled);
+console.log("Settlement completed at:", settlement.timestamp);
+```
+
+## Transaction Queries
+
+Get transaction history with filtering, search, and pagination:
+
+```typescript
+const transactions = await rails.getTransactions({
+  search: "TXN-001",
+  status: "completed",
+  bank: "BANK-A",
+  type: "transfer",
+  page: 1,
+  pageSize: 20,
+  userId: "user-123",
+});
+
+console.log("Total transactions:", transactions.total);
+console.log("Current page:", transactions.page);
+console.log("Transactions:", transactions.data);
+```
+
+## Simulator
+
+Start a transaction simulation for testing:
+
+```typescript
+const simulation = await rails.postSimulatorStart({
+  count: 100, // Number of transactions to simulate
+  interval: 1000, // Interval between transactions in ms
+});
+
+console.log("Simulation started:", simulation.message);
+```
+
+## Dashboard Metrics
+
+Get comprehensive dashboard metrics for observability:
+
+```typescript
+const metrics = await rails.getDashboardMetrics();
+
+console.log("Active banks:", metrics.activeBanks);
+console.log("Total revenue:", metrics.totalRevenue);
+console.log("Completion rate:", metrics.completionRate);
+console.log("Bank performance:", metrics.settlementOverview.bankPerformance);
+console.log("Reserve pool:", metrics.settlementOverview.reservePool);
+```
+
+### Metrics Structure
+
+The dashboard metrics response includes:
+
+- **activeBanks**: Number of active banking partners
+- **totalRevenue**: Cumulative revenue across all transactions
+- **completionRate**: Percentage of successful transactions
+- **revenueOverview**: Revenue data for specified period (default: 6 periods)
+- **transactionLogs**: Recent transaction activity by bank
+- **bankDistributions**: Transaction distribution across banks
+- **activeTransactions**: Currently in-flight transactions
+- **settlementOverview**: Settlement-specific metrics
+  - `reservePool`: Available reserve funds
+  - `bankPerformance`: Individual bank performance metrics
+  - `reserveExhausted`: Banks with depleted reserves
+  - `todaysTransactionLogs`: Today's transaction history
+  - `processingFeesThisWeekend`: Weekend processing costs
+- **mondayClearingPreparation**: Monday clearing readiness
+
+## Health Check
+
+Verify API service is healthy:
+
+```typescript
+const health = await rails.getHealth();
+
+console.log("Health status:", health.status);
+```
+
+## Error Handling for Operations
+
+Each operation can throw typed errors. Handle them appropriately:
+
+```typescript
+import * as errors from "@rails/sdk/models/errors";
+
+try {
+  const result = await rails.postLedgerSettle({
+    authorized_by: "user@example.com",
+  });
+} catch (error) {
+  if (error instanceof errors.RailsError) {
+    console.log("HTTP Error:", error.statusCode, error.message);
+    
+    if (error instanceof errors.ErrorT) {
+      console.log("API Error:", error.data$.error, error.data$.message);
+    }
+  }
+}
+```
+
+## Standalone Functions
+
+All methods are also available as standalone functions for tree-shaking and reduced bundle size:
+
+```typescript
+import { getTransactions, postWebhook } from "@rails/sdk";
+
+const transactions = await getTransactions({
+  page: 1,
+  pageSize: 10,
+});
+
+await postWebhook({
+  txnRef: "TXN-001",
+  amount: 50000,
+  currency: "NGN",
+  senderAccount: "1234567890",
+  receiverAccount: "0987654321",
+  senderBank: "BANK-A",
+  receiverBank: "BANK-B",
+  timestamp: new Date().toISOString(),
+});
+```
+
+Use this approach in browser-based applications or serverless environments where bundle size matters.
