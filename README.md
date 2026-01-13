@@ -8,15 +8,15 @@ Rails is a modern banking infrastructure API that enables seamless financial tra
 
 - **API Reference**: Complete endpoint documentation and request/response schemas
 - **SDK Guides**: Integration guides for the auto-generated TypeScript SDK (`@rails/sdk`)
-- **Development Essentials**: Best practices, authentication, and core concepts
-- **AI Tools & Integration**: Advanced features and third-party integrations
+- **Getting Started**: Quickstart guide, development setup, and core concepts
+- **Examples & Best Practices**: Real-world code examples and integration patterns
 
 ## Quick Links
 
 - **[Quickstart Guide](./quickstart.mdx)** - Get started in minutes
-- **[Development Guide](./development.mdx)** - Learn core concepts and architecture
+- **[Development Guide](./development.mdx)** - Set up your development environment
 - **[API Reference](./api-reference/introduction.mdx)** - Full endpoint documentation
-- **[SDK Setup](./essentials/code.mdx)** - Installation and configuration
+- **[SDK Installation](./guides/sdk-installation.mdx)** - Install and configure the SDK
 
 ## TypeScript SDK
 
@@ -25,7 +25,7 @@ The Rails TypeScript SDK (`@rails/sdk`) is auto-generated from the API specifica
 **Features:**
 - Full TypeScript type definitions
 - Request validation and error handling
-- Support for API Key and JWT authentication
+- Support for Bearer token authentication
 - Comprehensive examples and integration guides
 
 **Repository:** [`mvp/rails-typescript`](../rails-typescript)
@@ -34,33 +34,26 @@ For SDK setup and generation instructions, see [SDK_SETUP.md](../rails-typescrip
 
 ## Local Development
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview documentation changes locally:
+To preview documentation changes locally:
 
 ```bash
-npm i -g mint
+npm install -g @rails/sdk
+cd rails-docs
+mintlify dev
 ```
 
-From the root of this documentation folder (where `docs.json` is located), run:
+The documentation will be available at `http://localhost:3000`.
 
-```bash
-mint dev
-```
+## Making Changes
 
-View your preview at `http://localhost:3000`.
+- Edit `.mdx` files in the root and subdirectories
+- Update `docs.json` to modify navigation, theme, or configuration
+- Changes are automatically hot-reloaded in the dev server
 
-## Deployment
-
-Changes are deployed automatically to production when merged to the main branch. You can monitor deployments from the Mintlify dashboard.
-
-## Troubleshooting
-
-- **Dev environment not running?** Run `mint update` to ensure you have the latest Mintlify CLI version.
-- **404 errors?** Verify you're running from a directory with `docs.json`.
-- **SDK generation issues?** See [SDK_SETUP.md](../rails-typescript/SDK_SETUP.md) for Speakeasy configuration.
 
 ## Resources
 
-- [Mintlify Documentation](https://mintlify.com/docs)
-- [Mintlify Community](https://mintlify.com/community)
 - [Rails SDK Repository](../rails-typescript)
 - [API Server Repository](../api)
+- [Quickstart Guide](./quickstart.mdx)
+- [API Reference](./api-reference/introduction.mdx)
