@@ -1,13 +1,29 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "styling": {
+    "codeblocks": {
+      "theme": {
+        "light": "github-light",
+        "dark": "github-dark"
+      }
+    },
+    "colors": {
+      "hover": "#f0f0f0"
+    }
+  },
+  "name": "Rails Banking Infrastructure API",
+  "description": "Official documentation for Rails - A modern banking infrastructure API with TypeScript SDK support",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#ffffff",
+    "light": "#f8fafc",
+    "dark": "#0f172a"
   },
   "favicon": "/favicon.svg",
+  "banner": {
+    "content": "🚀 Rails Banking Infrastructure API - Production Ready",
+    "dismissible": true
+  },
   "navigation": {
     "tabs": [
       {
@@ -22,27 +38,21 @@
             ]
           },
           {
-            "group": "Customization",
+            "group": "SDK Guide",
+            "pages": [
+              "guides/sdk-installation",
+              "guides/sdk-core-methods",
+              "guides/sdk-error-handling",
+              "guides/sdk-examples"
+            ]
+          },
+          {
+            "group": "Essentials",
             "pages": [
               "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
+              "essentials/navigation",
               "essentials/images",
               "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
             ]
           }
         ]
@@ -51,8 +61,8 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Documentation",
-            "openapi": "api-reference/openapi.json"
+            "group": "REST API",
+            "openapi": "api-reference/openapi.yaml"
           }
         ]
       }
@@ -60,19 +70,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "GitHub",
+          "href": "https://github.com/sibabale",
+          "icon": "github"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "SDK Repository",
+          "href": "https://github.com/sibabale/rails-typescript",
+          "icon": "code"
         }
       ]
     }
@@ -84,21 +89,55 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "GitHub",
+        "href": "https://github.com/sibabale"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "SDK Docs",
+      "href": "https://github.com/sibabale/rails-typescript"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+      "github": "https://github.com/sibabale"
+    },
+    "links": [
+      {
+        "header": "Product",
+        "items": [
+          {
+            "label": "API Reference",
+            "href": "/api-reference/introduction"
+          },
+          {
+            "label": "TypeScript SDK",
+            "href": "https://github.com/sibabale/rails-typescript"
+          },
+          {
+            "label": "Changelog",
+            "href": "https://github.com/sibabale/rails/releases"
+          }
+        ]
+      },
+      {
+        "header": "Resources",
+        "items": [
+          {
+            "label": "GitHub Repository",
+            "href": "https://github.com/sibabale/rails"
+          },
+          {
+            "label": "Support",
+            "href": "mailto:support@rails.local"
+          },
+          {
+            "label": "Issues",
+            "href": "https://github.com/sibabale/rails/issues"
+          }
+        ]
+      }
+    ]
   }
 }
