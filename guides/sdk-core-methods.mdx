@@ -1,156 +1,208 @@
 ---
 title: "Core SDK Methods"
-description: "Reference for all available Rails SDK operations"
+description: "Reference for Users and Account operations in the Rails SDK"
 ---
 
-The Rails SDK exposes all API operations as type-safe methods. Here are the core operations:
+The Rails SDK provides type-safe methods for managing users and accounts in your banking application.
 
-## Transaction Webhooks
+## User Management
 
-Handle incoming transaction webhooks from external banking networks:
+### Create User
+
+Create a new user account with proper validation:
 
 ```typescript
 import { Rails } from "@rails/sdk";
 
 const rails = new Rails();
 
-async function handleWebhook() {
-  const result = await rails.postWebhook({
-    txnRef: "TXN-001",
-    senderAccount: "1234567890",
-    receiverAccount: "0987654321",
-    senderBank: "BANK-A",
-    receiverBank: "BANK-B",
-    amount: 50000,
-    currency: "NGN",
-    timestamp: new Date().toISOString(),
+async function createUser() {
+  const result = await rails.createUser({
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@example.com",
+    phoneNumber: "+1-555-0123",
+    dateOfBirth: "1990-01-15",
+    address: {
+      street: "123 Main St",
+      city: "Anytown",
+      state: "CA",
+      zipCode: "90210"
+    }
   });
 
-  console.log("Webhook processed:", result);
+  console.log("User created:", result.userId);
+  console.log("Status:", result.status);
 }
 ```
 
-## Ledger Management
+### Get User
 
-### Get Pending Transactions
-
-Retrieve all transactions awaiting settlement:
+Retrieve user information by ID:
 
 ```typescript
-const pending = await rails.getLedgerPending();
-
-console.log("Pending transactions:", pending.pending);
-console.log("Count:", pending.count);
-console.log("Timestamp:", pending.timestamp);
-```
-
-### Settle Transactions
-
-Trigger settlement for pending transactions:
-
-```typescript
-const settlement = await rails.postLedgerSettle({
-  authorized_by: "user@example.com",
-  force: false, // Skip validations if true
+const user = await rails.getUser({
+  userId: "user_abc123"
 });
 
-console.log("Settled transactions:", settlement.settled);
-console.log("Settlement completed at:", settlement.timestamp);
+console.log("User:", user.firstName, user.lastName);
+console.log("Email:", user.email);
+console.log("Status:", user.status);
 ```
 
-## Transaction Queries
+### Update User
 
-Get transaction history with filtering, search, and pagination:
+Update user profile information:
 
 ```typescript
-const transactions = await rails.getTransactions({
-  search: "TXN-001",
-  status: "completed",
-  bank: "BANK-A",
-  type: "transfer",
+const updatedUser = await rails.updateUser({
+  userId: "user_abc123",
+  phoneNumber: "+1-555-9999",
+  address: {
+    street: "456 Oak Ave",
+    city: "New City",
+    state: "NY",
+    zipCode: "10001"
+  }
+});
+
+console.log("User updated:", updatedUser.updatedAt);
+```
+
+### List Users
+
+Get a paginated list of users:
+
+```typescript
+const users = await rails.getUsers({
   page: 1,
   pageSize: 20,
-  userId: "user-123",
+  status: "active"
+});
+
+console.log("Total users:", users.total);
+console.log("Users:", users.data);
+```
+
+## Account Management
+
+### Create Account
+
+Create a new bank account for a user:
+
+```typescript
+const account = await rails.createAccount({
+  userId: "user_abc123",
+  accountType: "checking",
+  currency: "USD",
+  initialDeposit: 10000 // Amount in cents ($100.00)
+});
+
+console.log("Account created:", account.accountId);
+console.log("Account number:", account.accountNumber);
+console.log("Balance:", account.balance);
+```
+
+### Get Account Balance
+
+Check the current balance of an account:
+
+```typescript
+const balance = await rails.getAccountBalance({
+  accountId: "acc_123456"
+});
+
+console.log("Current balance:", balance.balance);
+console.log("Available balance:", balance.availableBalance);
+console.log("Currency:", balance.currency);
+```
+
+### Get Account Details
+
+Retrieve complete account information:
+
+```typescript
+const account = await rails.getAccount({
+  accountId: "acc_123456"
+});
+
+console.log("Account type:", account.accountType);
+console.log("Status:", account.status);
+console.log("Created:", account.createdAt);
+```
+
+### List User Accounts
+
+Get all accounts for a specific user:
+
+```typescript
+const accounts = await rails.getUserAccounts({
+  userId: "user_abc123"
+});
+
+console.log("User accounts:", accounts.length);
+accounts.forEach(account => {
+  console.log(`${account.accountType}: $${account.balance / 100}`);
+});
+```
+
+### Transfer Funds
+
+Transfer money between accounts:
+
+```typescript
+const transfer = await rails.transferFunds({
+  fromAccountId: "acc_sender_123",
+  toAccountId: "acc_receiver_456",
+  amount: 5000, // Amount in cents ($50.00)
+  currency: "USD",
+  description: "Payment for services",
+  idempotencyKey: "transfer_unique_123"
+});
+
+console.log("Transfer ID:", transfer.transferId);
+console.log("Status:", transfer.status);
+console.log("Completed at:", transfer.completedAt);
+```
+
+### Get Transaction History
+
+Retrieve account transaction history:
+
+```typescript
+const transactions = await rails.getAccountTransactions({
+  accountId: "acc_123456",
+  page: 1,
+  pageSize: 50,
+  startDate: "2024-01-01",
+  endDate: "2024-01-31"
 });
 
 console.log("Total transactions:", transactions.total);
-console.log("Current page:", transactions.page);
-console.log("Transactions:", transactions.data);
-```
-
-## Simulator
-
-Start a transaction simulation for testing:
-
-```typescript
-const simulation = await rails.postSimulatorStart({
-  count: 100, // Number of transactions to simulate
-  interval: 1000, // Interval between transactions in ms
+transactions.data.forEach(txn => {
+  console.log(`${txn.type}: $${txn.amount / 100} - ${txn.description}`);
 });
-
-console.log("Simulation started:", simulation.message);
 ```
 
-## Dashboard Metrics
+## Error Handling
 
-Get comprehensive dashboard metrics for observability:
-
-```typescript
-const metrics = await rails.getDashboardMetrics();
-
-console.log("Active banks:", metrics.activeBanks);
-console.log("Total revenue:", metrics.totalRevenue);
-console.log("Completion rate:", metrics.completionRate);
-console.log("Bank performance:", metrics.settlementOverview.bankPerformance);
-console.log("Reserve pool:", metrics.settlementOverview.reservePool);
-```
-
-### Metrics Structure
-
-The dashboard metrics response includes:
-
-- **activeBanks**: Number of active banking partners
-- **totalRevenue**: Cumulative revenue across all transactions
-- **completionRate**: Percentage of successful transactions
-- **revenueOverview**: Revenue data for specified period (default: 6 periods)
-- **transactionLogs**: Recent transaction activity by bank
-- **bankDistributions**: Transaction distribution across banks
-- **activeTransactions**: Currently in-flight transactions
-- **settlementOverview**: Settlement-specific metrics
-  - `reservePool`: Available reserve funds
-  - `bankPerformance`: Individual bank performance metrics
-  - `reserveExhausted`: Banks with depleted reserves
-  - `todaysTransactionLogs`: Today's transaction history
-  - `processingFeesThisWeekend`: Weekend processing costs
-- **mondayClearingPreparation**: Monday clearing readiness
-
-## Health Check
-
-Verify API service is healthy:
-
-```typescript
-const health = await rails.getHealth();
-
-console.log("Health status:", health.status);
-```
-
-## Error Handling for Operations
-
-Each operation can throw typed errors. Handle them appropriately:
+Handle API errors appropriately in your application:
 
 ```typescript
 import * as errors from "@rails/sdk/models/errors";
 
 try {
-  const result = await rails.postLedgerSettle({
-    authorized_by: "user@example.com",
+  const user = await rails.createUser({
+    firstName: "John",
+    lastName: "Doe",
+    email: "existing@example.com"
   });
 } catch (error) {
   if (error instanceof errors.RailsError) {
     console.log("HTTP Error:", error.statusCode, error.message);
     
-    if (error instanceof errors.ErrorT) {
-      console.log("API Error:", error.data$.error, error.data$.message);
+    if (error.statusCode === 409) {
+      console.log("User already exists with this email");
     }
   }
 }
@@ -158,26 +210,37 @@ try {
 
 ## Standalone Functions
 
-All methods are also available as standalone functions for tree-shaking and reduced bundle size:
+Import individual functions for optimized bundle sizes:
 
 ```typescript
-import { getTransactions, postWebhook } from "@rails/sdk";
+import { 
+  createUser, 
+  getUser, 
+  createAccount, 
+  getAccountBalance,
+  transferFunds 
+} from "@rails/sdk";
 
-const transactions = await getTransactions({
-  page: 1,
-  pageSize: 10,
+// Create user
+const user = await createUser({
+  firstName: "Alice",
+  lastName: "Johnson",
+  email: "alice@example.com"
 });
 
-await postWebhook({
-  txnRef: "TXN-001",
-  amount: 50000,
-  currency: "NGN",
-  senderAccount: "1234567890",
-  receiverAccount: "0987654321",
-  senderBank: "BANK-A",
-  receiverBank: "BANK-B",
-  timestamp: new Date().toISOString(),
+// Create account for user
+const account = await createAccount({
+  userId: user.userId,
+  accountType: "savings",
+  currency: "USD"
 });
+
+// Check balance
+const balance = await getAccountBalance({
+  accountId: account.accountId
+});
+
+console.log("Account balance:", balance.balance);
 ```
 
-Use this approach in browser-based applications or serverless environments where bundle size matters.
+This approach is recommended for serverless environments or applications where bundle size optimization is important.

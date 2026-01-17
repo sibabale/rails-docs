@@ -37,10 +37,7 @@
             "group": "Beginner's Guide",
             "pages": [
               "beginner-guide/what-is-rails-banking-system",
-              "beginner-guide/understanding-banking-apis",
-              "beginner-guide/user-management-basics",
-              "beginner-guide/account-management-basics",
-              "beginner-guide/first-project-setup"
+              "beginner-guide/understanding-banking-apis"
             ]
           },
           {
@@ -67,8 +64,19 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "REST API",
-            "openapi": "api-reference/openapi.yaml"
+            "group": "Getting Started",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Users API",
+            "pages": ["api-reference/endpoint/create"]
+          },
+          {
+            "group": "Accounts API",
+            "pages": [
+              "api-reference/endpoint/accounts-create",
+              "api-reference/endpoint/get"
+            ]
           }
         ]
       }
