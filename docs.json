@@ -31,10 +31,16 @@
         "groups": [
           {
             "group": "Getting started",
+            "pages": ["index", "quickstart", "development"]
+          },
+          {
+            "group": "Beginner's Guide",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "beginner-guide/what-is-rails-banking-system",
+              "beginner-guide/understanding-banking-apis",
+              "beginner-guide/user-management-basics",
+              "beginner-guide/account-management-basics",
+              "beginner-guide/first-project-setup"
             ]
           },
           {
