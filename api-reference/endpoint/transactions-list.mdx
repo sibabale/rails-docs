@@ -1,0 +1,138 @@
+---
+title: "List Transactions"
+api: "GET https://api.rails.com/api/v1/transactions"
+description: "List transactions by organization (paginated). Public SDK endpoint."
+---
+
+Lists transactions for an organization with pagination. Use this for operations and reporting (e.g. founder listing transactions across accounts). Requires API key.
+
+## Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `X-API-Key` | Yes | Your API key. |
+| `Content-Type` | For JSON | `application/json`. |
+
+## Query parameters
+
+<ParamField query="organization_id" type="string" required>
+  Organization UUID to list transactions for
+</ParamField>
+
+<ParamField query="page" type="integer">
+  Page number (default: 1)
+</ParamField>
+
+<ParamField query="per_page" type="integer">
+  Items per page (default: 10, max: 100)
+</ParamField>
+
+## Response
+
+Returns a paginated list of transaction records.
+
+<ResponseField name="data" type="array">
+  Array of transaction records. Each has: `id`, `organization_id`, `from_account_id`, `to_account_id`, `amount` (minor units), `currency`, `transaction_kind` (deposit, withdraw, transfer), `status` (pending, posted, failed), `created_at`, `updated_at`, and optional `failure_reason`, `idempotency_key`, `environment`.
+</ResponseField>
+
+<ResponseField name="pagination" type="object">
+  Pagination metadata: `page`, `per_page`, `total_count`, `total_pages`.
+</ResponseField>
+
+## Example
+
+<RequestExample>
+
+```typescript TypeScript
+import { Rails } from "@rails/sdk";
+
+const rails = new Rails({
+  apiKey: process.env.RAILS_API_KEY
+});
+
+const result = await rails.transactions.list({
+  organizationId: "org-uuid-here",
+  page: 1,
+  perPage: 20
+});
+
+console.log("Transactions:", result.data);
+console.log("Total:", result.pagination.totalCount);
+```
+
+```go Go
+result, err := client.Transactions.List(ctx, rails.TransactionListParams{
+  OrganizationID: "org-uuid-here",
+  Page:          1,
+  PerPage:       20,
+})
+```
+
+```java Java
+var result = client.transactions().list(TransactionListParams.builder()
+  .organizationId("org-uuid-here")
+  .page(1)
+  .perPage(20)
+  .build());
+```
+
+```kotlin Kotlin
+val result = client.transactions.list(TransactionListParams(
+  organizationId = "org-uuid-here",
+  page = 1,
+  perPage = 20
+))
+```
+
+```csharp C#
+var result = await client.Transactions.ListAsync(new TransactionListParams
+{
+  OrganizationId = "org-uuid-here",
+  Page = 1,
+  PerPage = 20
+});
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "data": [
+    {
+      "id": "txn-uuid",
+      "organization_id": "org-uuid",
+      "from_account_id": "acc-uuid",
+      "to_account_id": "acc-uuid",
+      "amount": 10000,
+      "currency": "USD",
+      "transaction_kind": "transfer",
+      "status": "posted",
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 20,
+    "total_count": 45,
+    "total_pages": 3
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "code": "VALIDATION_FAILED",
+  "message": "Something went wrong"
+}
+```
+
+</ResponseExample>
+
+## Notes
+
+- `amount` is in minor units (e.g. cents for USD).
+- For a single account’s transactions, use [List account transactions](/api-reference/endpoint/accounts-transactions) instead.

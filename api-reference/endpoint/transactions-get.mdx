@@ -54,29 +54,34 @@ Retrieves detailed information for a specific transaction by its unique identifi
 
 <RequestExample>
 
-```typescript TypeScript SDK
+```typescript TypeScript
 import { Rails } from "@rails/sdk";
 
 const rails = new Rails({
   apiKey: process.env.RAILS_API_KEY
 });
 
-const transaction = await rails.transactions.get("abc12345-e89b-12d3-a456-426614174000");
+const transaction = await rails.transactions.retrieve("abc12345-e89b-12d3-a456-426614174000");
 
 console.log("Transaction Type:", transaction.transactionType);
 console.log("Amount:", transaction.amount);
 console.log("Status:", transaction.status);
 ```
 
-```typescript Fetch API
-const response = await fetch('https://api.rails.com/api/v1/transactions/abc12345-e89b-12d3-a456-426614174000', {
-  headers: {
-    'Authorization': 'Bearer your_api_key_here',
-    'Content-Type': 'application/json'
-  }
-});
+```go Go
+transaction, err := client.Transactions.Retrieve(ctx, "abc12345-e89b-12d3-a456-426614174000")
+```
 
-const transaction = await response.json();
+```java Java
+var transaction = client.transactions().retrieve("abc12345-e89b-12d3-a456-426614174000");
+```
+
+```kotlin Kotlin
+val transaction = client.transactions.retrieve("abc12345-e89b-12d3-a456-426614174000")
+```
+
+```csharp C#
+var transaction = await client.Transactions.RetrieveAsync("abc12345-e89b-12d3-a456-426614174000");
 ```
 
 </RequestExample>
@@ -99,10 +104,9 @@ const transaction = await response.json();
 
 ```json Error Response (404 Not Found)
 {
-  "error": {
-    "code": "transaction_not_found",
-    "message": "No transaction found with the provided ID"
-  }
+  "status": "error",
+  "code": "NOT_FOUND",
+  "message": "No transaction found with the provided ID"
 }
 ```
 

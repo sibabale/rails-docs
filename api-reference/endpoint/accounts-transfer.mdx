@@ -44,7 +44,7 @@ Transfers funds from one account to another.
 
 <RequestExample>
 
-```typescript TypeScript SDK
+```typescript TypeScript
 import { Rails } from "@rails/sdk";
 
 const rails = new Rails({
@@ -53,7 +53,7 @@ const rails = new Rails({
 
 const result = await rails.accounts.transfer("123e4567-e89b-12d3-a456-426614174000", {
   toAccountId: "789e1234-e89b-12d3-a456-426614174000",
-  amount: 250.00,
+  amount: "250.00",
   description: "Transfer to savings"
 });
 
@@ -62,21 +62,40 @@ console.log("From balance:", result.fromAccount.balance);
 console.log("To balance:", result.toAccount.balance);
 ```
 
-```typescript Fetch API
-const response = await fetch('https://api.rails.com/api/v1/accounts/123e4567-e89b-12d3-a456-426614174000/transfer', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer your_api_key_here',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    to_account_id: "789e1234-e89b-12d3-a456-426614174000",
-    amount: 250.00,
-    description: "Transfer to savings"
-  })
-});
+```go Go
+result, err := client.Accounts.Transfer(ctx, "123e4567-e89b-12d3-a456-426614174000", rails.TransferParams{
+  ToAccountID: "789e1234-e89b-12d3-a456-426614174000",
+  Amount:      "250.00",
+  Description: "Transfer to savings",
+})
+```
 
-const result = await response.json();
+```java Java
+var result = client.accounts().transfer("123e4567-e89b-12d3-a456-426614174000",
+  TransferParams.builder()
+    .toAccountId("789e1234-e89b-12d3-a456-426614174000")
+    .amount("250.00")
+    .description("Transfer to savings")
+    .build());
+```
+
+```kotlin Kotlin
+val result = client.accounts.transfer("123e4567-e89b-12d3-a456-426614174000",
+  TransferParams(
+    toAccountId = "789e1234-e89b-12d3-a456-426614174000",
+    amount = "250.00",
+    description = "Transfer to savings"
+  ))
+```
+
+```csharp C#
+var result = await client.Accounts.TransferAsync("123e4567-e89b-12d3-a456-426614174000",
+  new TransferParams
+  {
+    ToAccountId = "789e1234-e89b-12d3-a456-426614174000",
+    Amount = "250.00",
+    Description = "Transfer to savings"
+  });
 ```
 
 </RequestExample>

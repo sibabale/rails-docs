@@ -60,7 +60,7 @@ Updates the status of a specific account.
 
 <RequestExample>
 
-```typescript TypeScript SDK
+```typescript TypeScript
 import { Rails } from "@rails/sdk";
 
 const rails = new Rails({
@@ -72,22 +72,27 @@ const account = await rails.accounts.updateStatus("123e4567-e89b-12d3-a456-42661
 });
 
 console.log("Account status updated:", account.status);
-console.log("Updated at:", account.updatedAt);
 ```
 
-```typescript Fetch API
-const response = await fetch('https://api.rails.com/api/v1/accounts/123e4567-e89b-12d3-a456-426614174000', {
-  method: 'PATCH',
-  headers: {
-    'Authorization': 'Bearer your_api_key_here',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    status: "suspended"
-  })
-});
+```go Go
+account, err := client.Accounts.UpdateStatus(ctx, "123e4567-e89b-12d3-a456-426614174000", rails.AccountUpdateStatusParams{
+  Status: "suspended",
+})
+```
 
-const account = await response.json();
+```java Java
+var account = client.accounts().updateStatus("123e4567-e89b-12d3-a456-426614174000",
+  UpdateAccountStatusParams.builder().status("suspended").build());
+```
+
+```kotlin Kotlin
+val account = client.accounts.updateStatus("123e4567-e89b-12d3-a456-426614174000",
+  AccountUpdateStatusParams(status = "suspended"))
+```
+
+```csharp C#
+var account = await client.Accounts.UpdateStatusAsync("123e4567-e89b-12d3-a456-426614174000",
+  new UpdateAccountStatusParams { Status = "suspended" });
 ```
 
 </RequestExample>
