@@ -7,11 +7,11 @@
   },
   "servers": [
     {
-      "url": "https://api.rails.com/sandbox",
+      "url": "https://api.railsinfra.com/sandbox",
       "description": "Sandbox (use for development and testing)"
     },
     {
-      "url": "https://api.rails.com",
+      "url": "https://api.railsinfra.com",
       "description": "Production (use only after sandbox validation)"
     }
   ],
