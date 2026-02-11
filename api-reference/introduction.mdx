@@ -1,210 +1,115 @@
 ---
 title: 'Introduction'
-description: 'Rails Banking API - User Management and Account Operations'
+description: 'Rails Banking API - Public SDK reference'
 ---
 
 ## Welcome to the Rails API
 
-The Rails API provides secure REST endpoints for user management and account operations in banking applications. Built with enterprise-grade security and compliance standards, it enables developers to create modern financial applications with confidence.
+The Rails API is the **public, SDK-supported** surface for building banking applications. It is built for **business owners (startup founders)** who run a bank: you create users and accounts, move money, and list or retrieve data for operations and for showing your own customers (e.g. “your transactions”). Internal, admin, and system endpoints are not exposed via the SDK and are not documented here.
 
 ## API Overview
 
-The Rails API focuses on two core areas:
+This reference documents only endpoints that are **Public (SDK)**. Using the SDK is the supported way to call the API; it exposes only approved operations and enforces API key and environment requirements.
 
-- **User Management** - Customer onboarding, authentication, and profile management
-- **Account Operations** - Account creation, balance inquiries, and transaction processing
+### Users
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/v1/users` | Create a user (customer/employee). Requires `X-Environment`. |
+
+### Accounts
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/v1/accounts` | Create an account for a user. |
+| GET | `/api/v1/accounts` | List accounts (e.g. by `user_id`). |
+| GET | `/api/v1/accounts/:id` | Retrieve an account. |
+| PATCH | `/api/v1/accounts/:id` | Update account status (e.g. suspend). |
+| DELETE | `/api/v1/accounts/:id` | Close an account. |
+| POST | `/api/v1/accounts/:id/deposit` | Deposit into account. |
+| POST | `/api/v1/accounts/:id/withdraw` | Withdraw from account. |
+| POST | `/api/v1/accounts/:id/transfer` | Transfer to another account. |
+| GET | `/api/v1/accounts/:account_id/transactions` | List transactions for an account. |
+
+### Transactions
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/v1/transactions` | List transactions by organization (paginated). |
+| GET | `/api/v1/transactions/:id` | Retrieve a single transaction. |
+
+## Environment
+
+Use the `X-Environment` header with **sandbox** or **production**. **Environment defaults to sandbox** when not provided, so development and testing are safe by default. Send the header explicitly when you need production.
 
 ## Authentication
 
-All API endpoints require Bearer token authentication. Include your API key in the `Authorization` header:
-
-```typescript
-const response = await fetch('https://api.rails.com/v1/users', {
-  headers: {
-    'Authorization': 'Bearer your_api_key_here',
-    'Content-Type': 'application/json'
-  }
-});
-```
+All public endpoints require **API key** authentication. Send your API key in the `X-API-Key` header. Unauthenticated access is not supported. The recommended way to call the API is with one of the official SDKs (TypeScript, Go, Java, Kotlin, C#), which handle headers and serialization for you.
 
 ### API Keys
 
-Rails uses API keys to authenticate requests:
+- **Test keys** – For sandbox (prefix: `rails_test_`)
+- **Live keys** – For production (prefix: `rails_live_`)
 
-- **Live keys** - For production use (prefix: `rails_live_`)  
-- **Test keys** - For development/testing (prefix: `rails_test_`)
+## Request / Response
 
-### Token Scopes
+### Headers
 
-API keys have specific permission scopes:
+| Header | Required | Description |
+|--------|----------|-------------|
+| `X-API-Key` | Yes | Your API key. |
+| `X-Environment` | When applicable | `sandbox` or `production`. |
+| `Content-Type` | For JSON bodies | `application/json`. |
 
-- `users:read` - Read user information
-- `users:write` - Create and update users
-- `accounts:read` - View account details and balances
-- `accounts:write` - Create accounts and process transactions
+Responses may include `x-correlation-id` for support and debugging.
 
-## Request/Response Format
+### Error format
 
-### Request Headers
-
-Include these headers in all requests:
-
-```typescript
-{
-  'Authorization': 'Bearer your_api_key',
-  'Content-Type': 'application/json',
-  'X-Rails-Version': '2024-01-15'
-}
-```
-
-### Response Format
-
-Successful responses return HTTP 200 with JSON data:
+Error responses use standard HTTP status codes and a consistent body:
 
 ```json
 {
-  "user_id": "user_abc123",
-  "first_name": "John",
-  "last_name": "Doe",
-  "email": "john@example.com",
-  "status": "active",
-  "created_at": "2024-01-15T10:30:00Z"
+  "status": "error",
+  "code": "VALIDATION_FAILED",
+  "message": "Something went wrong"
 }
 ```
-
-Error responses include detailed error information:
-
-```json
-{
-  "error": {
-    "code": "validation_failed",
-    "message": "Email address is already registered",
-    "field": "email"
-  }
-}
-```
-
-## User Management
-
-### Core User Operations
-
-- **POST /v1/users** - Create new users
-- **GET /v1/users/{id}** - Retrieve user details
-- **PUT /v1/users/{id}** - Update user information
-- **GET /v1/users** - List users with filtering
-
-### User Object
-
-```typescript
-interface User {
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  status: 'active' | 'suspended' | 'pending';
-  kyc_status: 'pending' | 'verified' | 'rejected';
-  created_at: string;
-  updated_at: string;
-}
-```
-
-## Account Operations
-
-### Core Account Operations
-
-- **POST /v1/accounts** - Create bank accounts
-- **GET /v1/accounts/{id}** - Get account details
-- **GET /v1/accounts/{id}/balance** - Check account balance
-- **POST /v1/transfers** - Transfer funds between accounts
-- **GET /v1/accounts/{id}/transactions** - Get transaction history
-
-### Account Object
-
-```typescript
-interface Account {
-  account_id: string;
-  user_id: string;
-  account_type: 'checking' | 'savings';
-  account_number: string;
-  balance: number; // Amount in cents
-  currency: string;
-  status: 'active' | 'suspended' | 'closed';
-  created_at: string;
-  updated_at: string;
-}
-```
-
-## Error Handling
-
-Rails uses standard HTTP status codes:
 
 | Status | Description |
 |--------|-------------|
-| 200 | Success |
-| 400 | Bad Request - Invalid parameters |
-| 401 | Unauthorized - Invalid API key |
-| 403 | Forbidden - Insufficient permissions |
-| 404 | Not Found - Resource doesn't exist |
-| 409 | Conflict - Duplicate resource |
-| 429 | Rate Limited - Too many requests |
-| 500 | Server Error - Internal error |
+| 200, 201 | Success |
+| 400 | Bad Request – Invalid parameters |
+| 401 | Unauthorized – Invalid or missing API key |
+| 403 | Forbidden – Insufficient permissions |
+| 404 | Not Found – Resource doesn't exist |
+| 500 | Server Error |
 
-## Rate Limiting
+## Official SDKs
 
-API requests are rate limited to prevent abuse:
+Rails provides **five** official, auto-generated SDKs. Use the one that matches your stack:
 
-- **Default limit**: 1000 requests per hour
-- **Rate limit headers** included in responses:
+| Language   | Package / repo     | Install / usage |
+|-----------|--------------------|------------------|
+| **TypeScript** | `@rails/sdk` (npm) | `npm install @rails/sdk` |
+| **Go**         | `github.com/rails/rails-go` | `go get github.com/rails/rails-go` |
+| **Java**       | `com.rails.api` (Maven) | Add dependency, then `RailsClient.builder().apiKey(...).build()` |
+| **Kotlin**     | `com.rails.api` (Maven) | Same as Java; use `RailsClient(apiKey = ...)` |
+| **C#**         | Rails NuGet package | `dotnet add package Rails`, then `new RailsClient(apiKey)` |
 
-```
-X-RateLimit-Limit: 1000
-X-RateLimit-Remaining: 999  
-X-RateLimit-Reset: 1640995200
-```
-
-When rate limited, implement exponential backoff:
-
-```typescript
-async function makeRequestWithRetry(url: string, options: any, retries = 3) {
-  try {
-    const response = await fetch(url, options);
-    
-    if (response.status === 429 && retries > 0) {
-      const delay = Math.pow(2, 4 - retries) * 1000; // 2s, 4s, 8s
-      await new Promise(resolve => setTimeout(resolve, delay));
-      return makeRequestWithRetry(url, options, retries - 1);
-    }
-    
-    return response;
-  } catch (error) {
-    throw error;
-  }
-}
-```
-
-## TypeScript SDK
-
-For the best developer experience, use the official TypeScript SDK:
-
-```bash
-npm install @rails/sdk
-```
-
-The SDK provides type-safe methods for all API operations:
+Example with the TypeScript SDK:
 
 ```typescript
 import { Rails } from "@rails/sdk";
 
-const rails = new Rails({
-  apiKey: process.env.RAILS_API_KEY
-});
+const rails = new Rails({ apiKey: process.env.RAILS_API_KEY });
 
-// Create user
+// Create user (include environment for user creation)
 const user = await rails.users.create({
-  firstName: "John",
-  lastName: "Doe", 
-  email: "john@example.com"
+  firstName: "Jane",
+  lastName: "Doe",
+  email: "jane@example.com",
+  password: "secure-password",
+  environment: "sandbox"
 });
 
 // Create account
@@ -213,39 +118,27 @@ const account = await rails.accounts.create({
   accountType: "checking"
 });
 
-// Check balance
-const balance = await rails.accounts.getBalance(account.accountId);
+// List account transactions
+const transactions = await rails.transactions.listByAccount(account.id);
 ```
 
-## Testing
+## OpenAPI spec
 
-Rails provides a sandbox environment for testing:
+The public API is defined in [openapi.json](/api-reference/openapi.json) in this repo. It is kept in sync with the SDK: only Public (SDK) endpoints appear there.
 
-- **Sandbox URL**: `https://api.sandbox.rails.com`
-- **Test API keys**: Use keys prefixed with `rails_test_`
-- **Test data**: All operations use fake data
-
-```typescript
-// Configure for sandbox testing
-const rails = new Rails({
-  apiKey: process.env.RAILS_TEST_API_KEY,
-  baseURL: "https://api.sandbox.rails.com"
-});
-```
-
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Users API" icon="users" href="/api-reference/users">
-    Create and manage user accounts
+  <Card title="Create User" icon="users" href="/api-reference/endpoint/create">
+    POST /api/v1/users – Create a user
   </Card>
-  <Card title="Accounts API" icon="wallet" href="/api-reference/accounts">
-    Handle account operations and transactions
+  <Card title="Accounts API" icon="wallet" href="/api-reference/endpoint/accounts-create">
+    Create, list, and manage accounts
+  </Card>
+  <Card title="Transactions" icon="list" href="/api-reference/endpoint/transactions-get">
+    List and retrieve transactions
   </Card>
   <Card title="SDK Guide" icon="code" href="/guides/sdk-installation">
-    Get started with the TypeScript SDK
-  </Card>
-  <Card title="Examples" icon="sparkles" href="/guides/sdk-examples">
-    See real-world integration examples
+    Install and use the TypeScript SDK
   </Card>
 </CardGroup>

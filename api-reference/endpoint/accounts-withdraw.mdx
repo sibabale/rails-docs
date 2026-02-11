@@ -1,6 +1,6 @@
 ---
 title: "Withdraw Funds"
-api: "POST https://api.rails.com/api/v1/accounts/{id}/withdraw"
+api: "POST https://api.railsinfra.com/api/v1/accounts/{id}/withdraw"
 description: "Withdraw funds from an account"
 ---
 
@@ -36,7 +36,7 @@ Withdraws funds from a specific account.
 
 <RequestExample>
 
-```typescript TypeScript SDK
+```typescript TypeScript
 import { Rails } from "@rails/sdk";
 
 const rails = new Rails({
@@ -44,7 +44,7 @@ const rails = new Rails({
 });
 
 const result = await rails.accounts.withdraw("123e4567-e89b-12d3-a456-426614174000", {
-  amount: 100.00,
+  amount: "100.00",
   description: "ATM withdrawal"
 });
 
@@ -52,20 +52,26 @@ console.log("New balance:", result.account.balance);
 console.log("Transaction ID:", result.transaction.id);
 ```
 
-```typescript Fetch API
-const response = await fetch('https://api.rails.com/api/v1/accounts/123e4567-e89b-12d3-a456-426614174000/withdraw', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer your_api_key_here',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    amount: 100.00,
-    description: "ATM withdrawal"
-  })
-});
+```go Go
+result, err := client.Accounts.Withdraw(ctx, "123e4567-e89b-12d3-a456-426614174000", rails.WithdrawParams{
+  Amount:      "100.00",
+  Description: "ATM withdrawal",
+})
+```
 
-const result = await response.json();
+```java Java
+var result = client.accounts().withdraw("123e4567-e89b-12d3-a456-426614174000",
+  WithdrawParams.builder().amount("100.00").description("ATM withdrawal").build());
+```
+
+```kotlin Kotlin
+val result = client.accounts.withdraw("123e4567-e89b-12d3-a456-426614174000",
+  WithdrawParams(amount = "100.00", description = "ATM withdrawal"))
+```
+
+```csharp C#
+var result = await client.Accounts.WithdrawAsync("123e4567-e89b-12d3-a456-426614174000",
+  new WithdrawParams { Amount = "100.00", Description = "ATM withdrawal" });
 ```
 
 </RequestExample>
