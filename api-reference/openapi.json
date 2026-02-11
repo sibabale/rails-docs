@@ -35,59 +35,6 @@
     }
   ],
   "paths": {
-    "/api/v1/users": {
-      "post": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Create user",
-        "operationId": "usersCreate",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/XEnvironment"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User created",
-            "headers": {
-              "x-correlation-id": {
-                "$ref": "#/components/headers/XCorrelationId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateUserResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/ErrorResponse"
-          },
-          "401": {
-            "$ref": "#/components/responses/ErrorResponse"
-          },
-          "403": {
-            "$ref": "#/components/responses/ErrorResponse"
-          },
-          "500": {
-            "$ref": "#/components/responses/ErrorResponse"
-          }
-        }
-      }
-    },
     "/api/v1/accounts": {
       "post": {
         "tags": [
@@ -749,47 +696,6 @@
           }
         }
       },
-      "CreateUserRequest": {
-        "type": "object",
-        "required": [
-          "first_name",
-          "last_name",
-          "email",
-          "password"
-        ],
-        "properties": {
-          "first_name": {
-            "type": "string"
-          },
-          "last_name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "password": {
-            "type": "string",
-            "format": "password"
-          }
-        }
-      },
-      "CreateUserResponse": {
-        "type": "object",
-        "required": [
-          "user_id",
-          "status"
-        ],
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "status": {
-            "type": "string"
-          }
-        }
-      },
       "AccountType": {
         "type": "string",
         "enum": [
@@ -808,9 +714,9 @@
       "CreateAccountRequest": {
         "type": "object",
         "required": [
-          "account_type",
-          "user_id"
+          "account_type"
         ],
+        "description": "Use either user_id (legacy platform user) or email + first_name + last_name (holder-based; requires X-API-Key). Max 1 checking and 1 saving per holder.",
         "properties": {
           "account_type": {
             "$ref": "#/components/schemas/AccountType"
@@ -826,7 +732,25 @@
           },
           "user_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "nullable": true,
+            "description": "Legacy: platform user ID. Omit when using holder (email + names)."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "description": "Holder-based: unique per org+env. Requires X-API-Key."
+          },
+          "first_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Holder-based: holder first name."
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Holder-based: holder last name."
           },
           "currency": {
             "type": "string",
