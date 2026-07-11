@@ -85,7 +85,14 @@
           "500": {
             "$ref": "#/components/responses/ErrorResponse"
           }
-        }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "cURL",
+            "source": "curl https://rails-client-server-staging.up.railway.app/api/v1/users   -H 'Content-Type: application/json'   -H 'X-API-Key: $RAILS_API_KEY'   -H 'X-Environment: sandbox'   -d '{\n    \"email\": \"dev@stainless.com\",\n    \"first_name\": \"first_name\",\n    \"last_name\": \"last_name\",\n    \"password\": \"password\"\n  }'"
+          }
+        ]
       }
     },
     "/api/v1/accounts": {
@@ -1078,42 +1085,121 @@
       "TransactionRecord": {
         "type": "object",
         "description": "Transaction as returned by list-by-organization (organization_id, from/to_account_id, transaction_kind).",
-        "required": ["id", "organization_id", "from_account_id", "to_account_id", "amount", "currency", "transaction_kind", "status", "created_at", "updated_at"],
+        "required": [
+          "id",
+          "organization_id",
+          "from_account_id",
+          "to_account_id",
+          "amount",
+          "currency",
+          "transaction_kind",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
         "properties": {
-          "id": { "type": "string", "format": "uuid" },
-          "organization_id": { "type": "string", "format": "uuid" },
-          "from_account_id": { "type": "string", "format": "uuid" },
-          "to_account_id": { "type": "string", "format": "uuid" },
-          "amount": { "type": "integer", "description": "Amount in minor units" },
-          "currency": { "type": "string" },
-          "transaction_kind": { "type": "string", "enum": ["deposit", "withdraw", "transfer"] },
-          "status": { "type": "string", "enum": ["pending", "posted", "failed"] },
-          "failure_reason": { "type": "string", "nullable": true },
-          "idempotency_key": { "type": "string" },
-          "environment": { "type": "string", "nullable": true },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" }
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "from_account_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "to_account_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Amount in minor units"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "transaction_kind": {
+            "type": "string",
+            "enum": [
+              "deposit",
+              "withdraw",
+              "transfer"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "posted",
+              "failed"
+            ]
+          },
+          "failure_reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "idempotency_key": {
+            "type": "string"
+          },
+          "environment": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "PaginationMeta": {
         "type": "object",
-        "required": ["page", "per_page", "total_count", "total_pages"],
+        "required": [
+          "page",
+          "per_page",
+          "total_count",
+          "total_pages"
+        ],
         "properties": {
-          "page": { "type": "integer", "minimum": 1 },
-          "per_page": { "type": "integer", "minimum": 1 },
-          "total_count": { "type": "integer" },
-          "total_pages": { "type": "integer", "minimum": 0 }
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "total_pages": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       },
       "TransactionListResponse": {
         "type": "object",
-        "required": ["data", "pagination"],
+        "required": [
+          "data",
+          "pagination"
+        ],
         "properties": {
           "data": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/TransactionRecord" }
+            "items": {
+              "$ref": "#/components/schemas/TransactionRecord"
+            }
           },
-          "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
         }
       }
     }
