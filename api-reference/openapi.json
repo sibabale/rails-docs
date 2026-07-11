@@ -90,7 +90,7 @@
           {
             "lang": "bash",
             "label": "cURL",
-            "source": "curl https://rails-client-server-staging.up.railway.app/api/v1/users   -H 'Content-Type: application/json'   -H 'X-API-Key: $RAILS_API_KEY'   -H 'X-Environment: sandbox'   -d '{\n    \"email\": \"dev@stainless.com\",\n    \"first_name\": \"first_name\",\n    \"last_name\": \"last_name\",\n    \"password\": \"password\"\n  }'"
+            "source": "curl https://www.api.railsinfra.com/api/v1/users   -H 'Content-Type: application/json'   -H 'X-API-Key: $RAILS_API_KEY'   -H 'X-Environment: sandbox'   -d '{\n    \"email\": \"dev@stainless.com\",\n    \"first_name\": \"first_name\",\n    \"last_name\": \"last_name\",\n    \"password\": \"password\"\n  }'"
           }
         ]
       }
