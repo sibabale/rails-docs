@@ -1,6 +1,6 @@
 ---
 title: "Deposit Funds"
-api: "POST https://api.rails.com/api/v1/accounts/{id}/deposit"
+api: "POST https://api.railsinfra.com/api/v1/accounts/{id}/deposit"
 description: "Deposit funds into an account"
 ---
 
@@ -36,7 +36,7 @@ Deposits funds into a specific account.
 
 <RequestExample>
 
-```typescript TypeScript SDK
+```typescript TypeScript
 import { Rails } from "@rails/sdk";
 
 const rails = new Rails({
@@ -44,7 +44,7 @@ const rails = new Rails({
 });
 
 const result = await rails.accounts.deposit("123e4567-e89b-12d3-a456-426614174000", {
-  amount: 500.00,
+  amount: "500.00",
   description: "Salary deposit"
 });
 
@@ -52,20 +52,26 @@ console.log("New balance:", result.account.balance);
 console.log("Transaction ID:", result.transaction.id);
 ```
 
-```typescript Fetch API
-const response = await fetch('https://api.rails.com/api/v1/accounts/123e4567-e89b-12d3-a456-426614174000/deposit', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer your_api_key_here',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    amount: 500.00,
-    description: "Salary deposit"
-  })
-});
+```go Go
+result, err := client.Accounts.Deposit(ctx, "123e4567-e89b-12d3-a456-426614174000", rails.DepositParams{
+  Amount:      "500.00",
+  Description: "Salary deposit",
+})
+```
 
-const result = await response.json();
+```java Java
+var result = client.accounts().deposit("123e4567-e89b-12d3-a456-426614174000",
+  DepositParams.builder().amount("500.00").description("Salary deposit").build());
+```
+
+```kotlin Kotlin
+val result = client.accounts.deposit("123e4567-e89b-12d3-a456-426614174000",
+  DepositParams(amount = "500.00", description = "Salary deposit"))
+```
+
+```csharp C#
+var result = await client.Accounts.DepositAsync("123e4567-e89b-12d3-a456-426614174000",
+  new DepositParams { Amount = "500.00", Description = "Salary deposit" });
 ```
 
 </RequestExample>

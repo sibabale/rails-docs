@@ -1,6 +1,6 @@
 ---
 title: "Get Account"
-api: "GET https://api.rails.com/api/v1/accounts/{id}"
+api: "GET https://api.railsinfra.com/api/v1/accounts/{id}"
 description: "Retrieve a specific account by ID"
 ---
 
@@ -70,29 +70,34 @@ Retrieves detailed information for a specific account by its unique identifier.
 
 <RequestExample>
 
-```typescript TypeScript SDK
+```typescript TypeScript
 import { Rails } from "@rails/sdk";
 
 const rails = new Rails({
   apiKey: process.env.RAILS_API_KEY
 });
 
-const account = await rails.accounts.get("123e4567-e89b-12d3-a456-426614174000");
+const account = await rails.accounts.retrieve("123e4567-e89b-12d3-a456-426614174000");
 
 console.log("Account Type:", account.accountType);
 console.log("Balance:", account.balance);
 console.log("Status:", account.status);
 ```
 
-```typescript Fetch API
-const response = await fetch('https://api.rails.com/api/v1/accounts/123e4567-e89b-12d3-a456-426614174000', {
-  headers: {
-    'Authorization': 'Bearer your_api_key_here',
-    'Content-Type': 'application/json'
-  }
-});
+```go Go
+account, err := client.Accounts.Retrieve(ctx, "123e4567-e89b-12d3-a456-426614174000")
+```
 
-const account = await response.json();
+```java Java
+var account = client.accounts().retrieve("123e4567-e89b-12d3-a456-426614174000");
+```
+
+```kotlin Kotlin
+val account = client.accounts.retrieve("123e4567-e89b-12d3-a456-426614174000")
+```
+
+```csharp C#
+var account = await client.Accounts.RetrieveAsync("123e4567-e89b-12d3-a456-426614174000");
 ```
 
 </RequestExample>

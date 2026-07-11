@@ -1,11 +1,11 @@
 ---
 title: "SDK Installation"
-description: "Get started with the Rails TypeScript SDK"
+description: "Get started with the Rails SDKs (TypeScript, Go, Java, Kotlin, C#)"
 ---
 
-The Rails TypeScript SDK is a type-safe, auto-generated client for the Rails API. It provides full type safety and IDE autocomplete for all API operations.
+Rails provides **five** official, auto-generated SDKs. Each is type-safe and exposes the same public API. Pick the one that matches your stack.
 
-## Installation
+## TypeScript
 
 Install the SDK using your preferred package manager:
 
@@ -32,51 +32,91 @@ Install the SDK using your preferred package manager:
   </Tab>
 </Tabs>
 
-## Basic Setup
-
-Initialize the Rails SDK client in your application:
+Initialize the client:
 
 ```typescript
 import { Rails } from "@rails/sdk";
 
 const rails = new Rails({
-  // Configuration options
-  serverURL: "http://localhost:8000/api",
+  apiKey: process.env.RAILS_API_KEY
 });
 ```
 
-## Configuration Options
+## Go
 
-The SDK accepts several configuration options when initializing:
+Add the Rails Go SDK to your module:
 
-| Option | Type | Description | Default |
-|--------|------|-------------|---------|
-| `serverURL` | `string` | API server base URL | `http://localhost:8000/api` |
-| `retryConfig` | `RetryConfig` | Global retry strategy for all operations | Built-in defaults |
-| `timeout` | `number` | Request timeout in milliseconds | 30000 |
-
-## Server Selection
-
-You can override the server URL for specific requests or set it globally during initialization:
-
-```typescript
-import { Rails } from "@rails/sdk";
-
-const rails = new Rails({
-  serverURL: "https://api.example.com",
-});
+```bash
+go get github.com/rails/rails-go
 ```
 
-For local development:
+Initialize the client:
 
-```typescript
-const rails = new Rails({
-  serverURL: "http://localhost:8000/api",
-});
+```go
+import (
+  "os"
+  "github.com/rails/rails-go"
+)
+
+client := rails.NewClient(rails.WithAPIKey(os.Getenv("RAILS_API_KEY")))
 ```
+
+## Java
+
+Add the Rails dependency to your `pom.xml` (Maven) or build file:
+
+```xml
+<dependency>
+  <groupId>com.rails.api</groupId>
+  <artifactId>rails</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+Initialize the client:
+
+```java
+import com.rails.api.RailsClient;
+
+RailsClient client = RailsClient.builder()
+  .apiKey(System.getenv("RAILS_API_KEY"))
+  .build();
+```
+
+## Kotlin
+
+Use the same Maven dependency as Java. Initialize the client:
+
+```kotlin
+import com.rails.api.RailsClient
+
+val client = RailsClient(apiKey = System.getenv("RAILS_API_KEY")!!)
+```
+
+## C#
+
+Add the Rails NuGet package:
+
+```bash
+dotnet add package Rails
+```
+
+Initialize the client:
+
+```csharp
+using Rails;
+
+var client = new RailsClient(Environment.GetEnvironmentVariable("RAILS_API_KEY"));
+```
+
+## Configuration (all SDKs)
+
+- **API key** – Required. Set via constructor/options or `RAILS_API_KEY` (where supported).
+- **Environment** – Pass **sandbox** or **production** where required (e.g. user creation). **Defaults to sandbox** when not provided, so development and testing are safe by default.
 
 ## Next Steps
 
 - Explore [core API methods](/guides/sdk-core-methods)
 - Learn about [error handling](/guides/sdk-error-handling)
 - Check out [integration examples](/guides/sdk-examples)
+- Browse the [API reference](/api-reference/introduction) for endpoint-specific examples in all five languages

@@ -13,7 +13,7 @@
     }
   },
   "name": "Rails Banking Infrastructure API",
-  "description": "Official documentation for Rails - A modern banking infrastructure API with TypeScript SDK support",
+  "description": "Official documentation for Rails - A modern banking infrastructure API with SDKs for TypeScript, Go, Java, Kotlin, and C#",
   "colors": {
     "primary": "#000000",
     "light": "#f8fafc",
@@ -79,11 +79,7 @@
           },
           {
             "group": "Users API",
-            "pages": [
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/users-get",
-              "api-reference/endpoint/users-accounts"
-            ]
+            "pages": ["api-reference/endpoint/create"]
           },
           {
             "group": "Accounts API",
@@ -96,7 +92,13 @@
               "api-reference/endpoint/accounts-deposit",
               "api-reference/endpoint/accounts-withdraw",
               "api-reference/endpoint/accounts-transfer",
-              "api-reference/endpoint/accounts-transactions",
+              "api-reference/endpoint/accounts-transactions"
+            ]
+          },
+          {
+            "group": "Transactions API",
+            "pages": [
+              "api-reference/endpoint/transactions-list",
               "api-reference/endpoint/transactions-get"
             ]
           }
